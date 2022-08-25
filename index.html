@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>svg medical charts</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="draw.js"></script>
+    <style type="text/css">
+        svg {
+            border: 1px solid #aaa;
+        }
+        .xtext {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="flex flex-col px-5 py-10">
+        <div class="w-full flex">
+            
+            <div class="w-[300px]">
+                <span>svg</span>
+                <div id="chart-container">
+                </div>
+            </div>
+            <div class="w-[400px]">
+                <span>svg</span>
+                <div id="bar-container">
+                </div>
+            </div>
+
+            
+        </div>
+
+
+        <span>base64 image</span>
+        <img id="svgimg" class="w-[200px]" />
+    </div>
+</body>
+<script>
+    let chart = new medicalChart();
+    var svg = chart.pill(200, 100, '161 ml', 0.7, 1.6, 0);
+    document.getElementById('chart-container').appendChild(svg);
+    document.getElementById('svgimg').src = chart.toImg();
+
+    var bar = new medicalChart();
+    var barChart = bar.bar(200, 200);
+    document.getElementById('bar-container').appendChild(barChart);
+</script>
+
+</html>
