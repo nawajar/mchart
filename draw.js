@@ -61,9 +61,9 @@ function medicalChart() {
         return n
     }
 
-    this.bar = (w, h , data) => {
+    this.bar = (w, h , refRang,  data) => {
 
-        const pad = 20;
+        const pad = 35;
         var svg = getNode("svg", { width: w, height: h });
         var xline = getNode('line', { x1: pad , y1: h-pad  , x2:w-pad ,y2:h-pad ,strokeWidth:1 , stroke: '#D3D3D3'  });
         svg.appendChild(xline);
@@ -74,21 +74,78 @@ function medicalChart() {
         svg.appendChild(r);
 
         var xlineWidth = (w-pad) - pad - (10);
-        data = ['10 Jun 20', '10 Jun 20', '10 Jun 20', '10 Jun 20', '10 Jun 20'];
+        data = ['10 Jun 2020', '10 Jun 20', '10 Jun 20', '10 Jun 20', '10 Jun 20'];
         var point = xlineWidth / data.length;
         console.log(point);
 
         var index = 0;
         for(let i of data) {
             var x = index == 0 ? (pad) : x + point;
-            console.log(x);
         
-            var r = getNode('text', { x: x, y: h-pad , fill: 'black', width: 10, style:"width:10px;height:40px;white-space: normal;font-size:5px" });
-            var textNode = document.createTextNode(i);
-            r.appendChild(textNode);
+            var r = getNode('text', { x: x, y: h-pad , 
+                width: 20,
+                fill: 'black', 
+                width: 10, 
+                textAnchor:"middle",
+                style:"width:10px;height:40px;white-space: nomal;font-size:5px" 
+            });
+            var tspan1 = getNode('tspan', { x: x, 
+                dy: '1.2em',
+                fill: 'black', 
+            });
+            var tspan2 = getNode('tspan', { x: x, 
+                dy: '1.2em',
+                fill: 'black', 
+            });
+            var textNode1 = document.createTextNode(i.split(' ')[0]);
+            var textNode2 = document.createTextNode(i.split(' ')[1] + i.split(' ')[2]);
+            tspan1.appendChild(textNode1);
+            tspan2.appendChild(textNode2);
+
+            r.appendChild(tspan1);
+            r.appendChild(tspan2);
             svg.appendChild(r);
             index +=1;
         }
+
+        var yline = getNode('line', { x1: pad , y1: pad + 30  , x2:pad ,y2:h-pad - 30 ,strokeWidth:1 , stroke: '#D3D3D3'  });
+        svg.appendChild(yline);
+        var refrange = [11.6 , 15];
+        var r = getNode('text', { x: pad-30, y: h-pad - 30 , 
+            width: 20,
+            fill: 'black', 
+            width: 10, 
+            style:"font-size:5px" 
+        });
+        var textNode = document.createTextNode(refrange[0] + 'g/dL');
+        r.appendChild(textNode);
+        svg.appendChild(r);
+
+        var r = getNode('text', { x: pad-30, y: pad  + 30, 
+            width: 20,
+            fill: 'black', 
+            width: 10, 
+            style:"font-size:5px" 
+        });
+        var textNode = document.createTextNode(refrange[1] + 'g/dL');
+        r.appendChild(textNode);
+        svg.appendChild(r);
+
+        var rect = getNode('rect', { x: pad  , y: pad + 30   , width: w-pad -30, height: h-pad-30-35-30, fill: '#DCDCDC' , opacity: .5 });
+        svg.appendChild(rect);
+
+        for(let i=1; i <= w-pad * 2; i+=10) {
+            var cross = getNode('line', { x1: pad + i + 10 , y1: pad  , x2:pad +i + 10 ,y2:h-pad  ,strokeWidth:.1 , stroke: '#D3D3D3'  });
+            svg.appendChild(cross);
+        }
+
+        for(let i=1; i <= h-pad * 2; i+=10) {
+            var crossx = getNode('line', { x1: pad , y1: pad + i + 10  , x2:w-pad ,y2:pad + i + 10 ,strokeWidth:.1 , stroke: '#D3D3D3'  });
+            svg.appendChild(crossx);
+        }
+
+       
+
 
         return svg;
     }
