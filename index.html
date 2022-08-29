@@ -66,13 +66,18 @@
             date: '10 Jun 2021'
         }, 
         {
+            value: 12,
+            date: '10 Jun 2020'
+        },
+        {
             value: 13,
             date: '10 Jun 2020'
         },
         {
-            value: 14,
+            value: 15,
             date: '10 Jun 2020'
         },
+
         {
             value: 16,
             date: '10 Jun 2020'
@@ -80,7 +85,7 @@
        ];  
    
     var bar = new medicalChart();
-    var barChart = bar.bar(300, 200 , refRange, data);
+    var barChart = bar.bar(300, 180 , refRange, data);
     document.getElementById('bar-container').appendChild(barChart);
     document.getElementById('svgimg2').src = bar.toImg();
 </script>

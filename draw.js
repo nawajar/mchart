@@ -81,18 +81,29 @@ function medicalChart() {
             var x = index == 0 ? (pad) : x + point;
 
             var calYPoint = 0;
-            if(i.value == 15) {
-                calYPoint = pad+ 30;
-            }else if(i.value == 11.6) {
-                calYPoint = h-pad-30;
-            }else {
-                var dif = 15 - i.value;
-                if (dif > 0) {
-                    calYPoint = pad+ 30 + (29.411 * dif);
-                }else {
-                    calYPoint = pad+ 30 - (29.411 * -dif);
+            var ylineHeight = (h - pad - 30) - (pad + 30);
+            var barRatio = ylineHeight / (refRange[1] - refRange[0]);
+
+            if(i.value <= refRange[0] ) {
+                var dif = refRange[0] - i.value;
+                if(dif == 0) {
+                    calYPoint = h- pad - 30;
+                }else{
+                    calYPoint = h- pad - 30 + (barRatio * dif);
                 }
             }
+
+            if(i.value >= refRange[1]) {
+                var dif = 15 - i.value;
+                calYPoint = pad+ 30 + (barRatio * dif);
+            }
+
+            if(i.value > refRange[0] && i.value < refRange[1]) {
+                var dif = 15 - i.value;
+                calYPoint = pad + 30 + (barRatio * dif);
+                console.log(dif , i.value , calYPoint);
+            }
+
 
             pointTemp.push({
                 x: x+10,
