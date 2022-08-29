@@ -61,7 +61,7 @@ function medicalChart() {
         return n
     }
 
-    this.bar = (w, h , refRang,  data) => {
+    this.bar = (w, h , refRange,  data) => {
 
         const pad = 35;
         var svg = getNode("svg", { width: w, height: h });
@@ -74,31 +74,54 @@ function medicalChart() {
         svg.appendChild(r);
 
         var xlineWidth = (w-pad) - pad - (10);
-        data = ['10 Jun 2020', '10 Jun 20', '10 Jun 20', '10 Jun 20', '10 Jun 20'];
         var point = xlineWidth / data.length;
-        console.log(point);
-
+        var pointTemp = [];
         var index = 0;
         for(let i of data) {
             var x = index == 0 ? (pad) : x + point;
-        
-            var r = getNode('text', { x: x, y: h-pad , 
+
+            var calYPoint = 0;
+            if(i.value == 15) {
+                calYPoint = pad+ 30;
+            }else if(i.value == 11.6) {
+                calYPoint = h-pad-30;
+            }else {
+                var dif = 15 - i.value;
+                if (dif > 0) {
+                    calYPoint = (h-pad-30) - (29.411 * dif);
+                }
+            }
+
+            pointTemp.push({
+                x: x+10,
+                y: calYPoint
+            });
+            
+            var circle = getNode('circle', { 
+                cx: x+ 10,
+                cy: calYPoint,
+                r: 2,
+                fill:'red'
+            });
+            svg.appendChild(circle);
+
+            var r = getNode('text', { x: x + 10, y: h-pad , 
                 width: 20,
                 fill: 'black', 
                 width: 10, 
                 textAnchor:"middle",
                 style:"width:10px;height:40px;white-space: nomal;font-size:5px" 
             });
-            var tspan1 = getNode('tspan', { x: x, 
+            var tspan1 = getNode('tspan', { x: x+10, 
                 dy: '1.2em',
                 fill: 'black', 
             });
-            var tspan2 = getNode('tspan', { x: x, 
+            var tspan2 = getNode('tspan', { x: x+10, 
                 dy: '1.2em',
                 fill: 'black', 
             });
-            var textNode1 = document.createTextNode(i.split(' ')[0]);
-            var textNode2 = document.createTextNode(i.split(' ')[1] + i.split(' ')[2]);
+            var textNode1 = document.createTextNode(i.date.split(' ')[0]);
+            var textNode2 = document.createTextNode(i.date.split(' ')[1] + i.date.split(' ')[2]);
             tspan1.appendChild(textNode1);
             tspan2.appendChild(textNode2);
 
@@ -107,17 +130,24 @@ function medicalChart() {
             svg.appendChild(r);
             index +=1;
         }
+        var next = 1;
+        for (let p of pointTemp) {
+            if(p.x && pointTemp[next]) {
+                var xline = getNode('line', { x1: p.x , y1: p.y  , x2:pointTemp[next].x ,y2: pointTemp[next].y ,strokeWidth:1 , stroke: '#4682B4'  });
+                svg.appendChild(xline);
+            }
+            next++;
+        }
 
         var yline = getNode('line', { x1: pad , y1: pad + 30  , x2:pad ,y2:h-pad - 30 ,strokeWidth:1 , stroke: '#D3D3D3'  });
         svg.appendChild(yline);
-        var refrange = [11.6 , 15];
         var r = getNode('text', { x: pad-30, y: h-pad - 30 , 
             width: 20,
             fill: 'black', 
             width: 10, 
             style:"font-size:5px" 
         });
-        var textNode = document.createTextNode(refrange[0] + 'g/dL');
+        var textNode = document.createTextNode(refRange[0] + 'g/dL');
         r.appendChild(textNode);
         svg.appendChild(r);
 
@@ -127,7 +157,7 @@ function medicalChart() {
             width: 10, 
             style:"font-size:5px" 
         });
-        var textNode = document.createTextNode(refrange[1] + 'g/dL');
+        var textNode = document.createTextNode(refRange[1] + 'g/dL');
         r.appendChild(textNode);
         svg.appendChild(r);
 
@@ -144,9 +174,7 @@ function medicalChart() {
             svg.appendChild(crossx);
         }
 
-       
-
-
+        this._svg = svg;
         return svg;
     }
 }

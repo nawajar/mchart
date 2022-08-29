@@ -11,6 +11,7 @@
         svg {
             border: 1px solid #aaa;
         }
+
         .xtext {
             font-size: 12px;
             color: black;
@@ -21,24 +22,34 @@
 <body>
     <div class="flex flex-col px-5 py-10">
         <div class="w-full flex">
-            
+
             <div class="w-[300px]">
                 <span>svg</span>
                 <div id="chart-container">
                 </div>
             </div>
             <div class="w-[400px]">
+                <div id="range"></div>
                 <span>svg</span>
                 <div id="bar-container">
                 </div>
             </div>
 
-            
+
         </div>
 
 
-        <span>base64 image</span>
-        <img id="svgimg" class="w-[200px]" />
+        <div class="flex w-full space-x-5">
+            <div>
+                <span>base64 image</span>
+                <img id="svgimg" class="w-[200px]" />
+            </div>
+
+            <div>
+                <span>base64 image</span>
+                <img id="svgimg2" class="w-[300px]" />
+            </div>
+        </div>
     </div>
 </body>
 <script>
@@ -47,9 +58,31 @@
     document.getElementById('chart-container').appendChild(svg);
     document.getElementById('svgimg').src = chart.toImg();
 
+
+    var refRange = [11.6 , 15];
+    var data = [
+        {
+            value: 11.6,
+            date: '10 Jun 2021'
+        }, 
+        {
+            value: 13,
+            date: '10 Jun 2020'
+        },
+        {
+            value: 14,
+            date: '10 Jun 2020'
+        },
+        {
+            value: 15,
+            date: '10 Jun 2020'
+        }
+       ];  
+   
     var bar = new medicalChart();
-    var barChart = bar.bar(300, 200);
+    var barChart = bar.bar(300, 200 , refRange, data);
     document.getElementById('bar-container').appendChild(barChart);
+    document.getElementById('svgimg2').src = bar.toImg();
 </script>
 
 </html>
