@@ -88,7 +88,9 @@ function medicalChart() {
             }else {
                 var dif = 15 - i.value;
                 if (dif > 0) {
-                    calYPoint = (h-pad-30) - (29.411 * dif);
+                    calYPoint = pad+ 30 + (29.411 * dif);
+                }else {
+                    calYPoint = pad+ 30 - (29.411 * -dif);
                 }
             }
 
