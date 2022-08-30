@@ -77,9 +77,10 @@ function medicalChart() {
         var point = xlineWidth / data.length;
         var pointTemp = [];
         var index = 0;
+        
         for(let i of data) {
+            var isInRange = false;
             var x = index == 0 ? (pad) : x + point;
-
             var calYPoint = 0;
             var ylineHeight = (h - pad - 30) - (pad + 30);
             var barRatio = ylineHeight / (refRange[1] - refRange[0]);
@@ -88,23 +89,26 @@ function medicalChart() {
                 var dif = refRange[0] - i.value;
                 if(dif == 0) {
                     calYPoint = h- pad - 30;
+                    isInRange = true;
                 }else{
                     calYPoint = h- pad - 30 + (barRatio * dif);
                 }
             }
 
             if(i.value >= refRange[1]) {
-                var dif = 15 - i.value;
-                calYPoint = pad+ 30 + (barRatio * dif);
+                var dif = i.value - 15; 
+                calYPoint = pad+ 30 - (barRatio * dif);
+                if(dif === 0) {
+                    isInRange = true;
+                }
             }
-
+            
             if(i.value > refRange[0] && i.value < refRange[1]) {
                 var dif = 15 - i.value;
                 calYPoint = pad + 30 + (barRatio * dif);
-                console.log(dif , i.value , calYPoint);
+                isInRange = true;
             }
-
-
+            
             pointTemp.push({
                 x: x+10,
                 y: calYPoint
@@ -114,9 +118,13 @@ function medicalChart() {
                 cx: x+ 10,
                 cy: calYPoint,
                 r: 2,
-                fill:'red'
+                fill: isInRange ? 'blue':'red'
             });
             svg.appendChild(circle);
+            var r = getNode('text', { x: x+ 10, y: calYPoint + 5, fill: 'black', fontSize: '6px', textAnchor:"middle", dominantBaseline:"central" });
+            var valueText = document.createTextNode(Number(i.value).toFixed(1));
+            r.appendChild(valueText);
+            svg.appendChild(r);
 
             var r = getNode('text', { x: x + 10, y: h-pad , 
                 width: 20,
