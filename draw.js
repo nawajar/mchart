@@ -35,19 +35,27 @@ function medicalChart() {
 
         var circlePosition = 0;
         var isInrange = false;
+        var circleRadiousShif = 0;
+        var halfPoint = ((endPoint - startPoint ) / 2) + startPoint;
+        circleRadiousShif = 5;
         if(valuePosition <= startPoint) {
             var dif = startPoint - valuePosition;
             if(dif == 0) {
-                circlePosition = startXRefRange - 5;
+                circlePosition = startXRefRange + circleRadiousShif;
                 isInrange = true;
             }else {
-                circlePosition = padLeftRight - dif * subRatio - 5;
+                circlePosition = padLeftRight - dif * subRatio - circleRadiousShif;
             }
         }
 
         if(valuePosition > startPoint) {
             var dif = valuePosition - startPoint;
-            circlePosition = padLeftRight + (dif * subRatio) - 5;
+            if(valuePosition == halfPoint) {
+                circlePosition = padLeftRight + (dif * subRatio);
+            }else {
+                circlePosition = padLeftRight + (dif * subRatio) - circleRadiousShif;
+            }
+            
             isInrange = true;
         }
 
@@ -55,6 +63,7 @@ function medicalChart() {
             isInrange = false;
         }
         console.log(circlePosition);
+        console.log(valuePosition , halfPoint);
        
 
         var r = getNode('text', { x: '50%', y: '58%', fill: '#A9A9A9', fontSize: '8px', width: '80%', textAnchor:"middle" });
