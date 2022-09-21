@@ -34,8 +34,6 @@
                 <div id="bar-container">
                 </div>
             </div>
-
-
         </div>
 
 
@@ -54,7 +52,7 @@
 </body>
 <script>
     let chart = new medicalChart();
-    var svg = chart.pill(200, 100, '161 ml', 0.7, 1.6, 0);
+    var svg = chart.pill(200, 100, '161 ml', 12, 14, 13);
     document.getElementById('chart-container').appendChild(svg);
     document.getElementById('svgimg').src = chart.toImg();
 
@@ -85,7 +83,7 @@
        ];  
    
     var bar = new medicalChart();
-    var barChart = bar.bar(300, 180 , refRange, data);
+    var barChart = bar.bar(250, 180 , refRange, data);
     document.getElementById('bar-container').appendChild(barChart);
     document.getElementById('svgimg2').src = bar.toImg();
 </script>

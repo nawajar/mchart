@@ -2,43 +2,75 @@
 function medicalChart() {
     this._svg = null;
     this.pill = (w, h , totalIndicatorLabel , startPoint , endPoint , valuePosition) => {
+
+        var xPad = 20;
         var svg = getNode("svg", { width: w, height: h });
         var r = getNode('text', { x: '50%', y: '45%', fill: 'red', fontSize: '10px', textAnchor:"middle" });
         var textNode = document.createTextNode(totalIndicatorLabel);
         r.appendChild(textNode);
         svg.appendChild(r);
 
-        var r = getNode('rect', { x: '10%', y: '50%', width: '80%', height: 10, fill: 'none', rx: 5, ry: 5, stroke: '#D3D3D3', strokeWidth: "1" });
+        var r = getNode('rect', { x: '10%', y: '50%', width: w * 0.8, height: 10, fill: 'none', rx: 5, ry: 5, stroke: '#D3D3D3', strokeWidth: "1" });
         svg.appendChild(r);
         
-
-        var r = getNode('rect', { x: '20%', y: '50%', width: '60%', height: 10, fill: '#D3D3D3', rx: 5, ry: 5 });
+        //console.log(w);
+        var r = getNode('rect', { x: '25%', y: '50%', width: w * 0.5, height: 10, fill: '#D3D3D3', rx: 5, ry: 5 });
         svg.appendChild(r);
 
-        var percantage = 0;
-        if(valuePosition == 50 ) {
-            percantage = valuePosition
-        }else if (valuePosition < 50) {
-            percantage = valuePosition + 12;
-        }else if (valuePosition > 50) {
-            percantage = valuePosition - 12;
+        var padLeftRight = w * 0.5 / 2;
+        //console.log(padLeftRight);
+        var startXRefRange = padLeftRight;
+        var endXRefRange = w - padLeftRight;
+        //console.log(startXRefRange , endXRefRange);
+
+        var barWidth = endXRefRange - startXRefRange;
+        console.log(barWidth);
+
+        var rangeWidth = endPoint - startPoint;
+        console.log(rangeWidth);
+
+        var subRatio = barWidth / rangeWidth;
+        console.log(subRatio);
+        
+
+        var circlePosition = 0;
+        var isInrange = false;
+        if(valuePosition <= startPoint) {
+            var dif = startPoint - valuePosition;
+            if(dif == 0) {
+                circlePosition = startXRefRange - 5;
+                isInrange = true;
+            }else {
+                circlePosition = padLeftRight - dif * subRatio - 5;
+            }
         }
-        //var percantage = valuePosition < 49 ? valuePosition + 12 : valuePosition - 12;
-        //percantage = percantage < 180 ? percantage + 15 : percantage + 5;
-        var r = getNode('circle', { cx: percantage + '%', cy: '55%', r: 5, fill: 'red', x: 90 });
-        svg.appendChild(r);
+
+        if(valuePosition > startPoint) {
+            var dif = valuePosition - startPoint;
+            circlePosition = padLeftRight + (dif * subRatio) - 5;
+            isInrange = true;
+        }
+
+        if(valuePosition > endPoint) {
+            isInrange = false;
+        }
+        console.log(circlePosition);
+       
 
         var r = getNode('text', { x: '50%', y: '58%', fill: '#A9A9A9', fontSize: '8px', width: '80%', textAnchor:"middle" });
         var textNode = document.createTextNode('Referance Range');
         r.appendChild(textNode);
         svg.appendChild(r);
 
-        var r = getNode('text', { x: '20%', y: '70%', fill: 'black', fontSize: '8px', textAnchor:"middle" });
+        var r = getNode('circle', { cx: circlePosition , cy: '55%', r: 5, fill: isInrange? 'blue': 'red', x: 90 , opacity: .5 });
+        svg.appendChild(r);
+
+        var r = getNode('text', { x: '25%', y: '70%', fill: 'black', fontSize: '8px', textAnchor:"middle" });
         var textNode = document.createTextNode(startPoint);
         r.appendChild(textNode);
         svg.appendChild(r);
 
-        var r = getNode('text', { x: '80%', y: '70%', fill: 'black', fontSize: '8px', textAnchor:"middle" });
+        var r = getNode('text', { x: '75%', y: '70%', fill: 'black', fontSize: '8px', textAnchor:"middle" });
         var textNode = document.createTextNode(endPoint);
         r.appendChild(textNode);
         svg.appendChild(r);
@@ -68,7 +100,7 @@ function medicalChart() {
         var xline = getNode('line', { x1: pad , y1: h-pad  , x2:w-pad ,y2:h-pad ,strokeWidth:1 , stroke: '#D3D3D3'  });
         svg.appendChild(xline);
 
-        var r = getNode('text', { x: w-pad, y: h-pad, fill: 'black', fontSize: '6px', textAnchor:"right", dominantBaseline:"central" });
+        var r = getNode('text', { x: w-pad+10, y: h-pad, fill: 'black', fontSize: '6px', textAnchor:"right", dominantBaseline:"central" });
         var textNode = document.createTextNode('Date');
         r.appendChild(textNode);
         svg.appendChild(r);
@@ -154,7 +186,7 @@ function medicalChart() {
         var next = 1;
         for (let p of pointTemp) {
             if(p.x && pointTemp[next]) {
-                var xline = getNode('line', { x1: p.x , y1: p.y  , x2:pointTemp[next].x ,y2: pointTemp[next].y ,strokeWidth:1 , stroke: '#4682B4'  });
+                var xline = getNode('line', { x1: p.x , y1: p.y  , x2:pointTemp[next].x ,y2: pointTemp[next].y ,strokeWidth:1 , stroke: '#4682B4' ,strokeDasharray: next == 1 || next == 2 ? "2" : "0"  });
                 svg.appendChild(xline);
             }
             next++;
@@ -182,7 +214,7 @@ function medicalChart() {
         r.appendChild(textNode);
         svg.appendChild(r);
 
-        var rect = getNode('rect', { x: pad  , y: pad + 30   , width: w-pad -30, height: h-pad-30-35-30, fill: '#DCDCDC' , opacity: .5 });
+        var rect = getNode('rect', { x: pad  , y: pad + 30   , width: w-pad -35, height: h-pad-30-35-30, fill: '#DCDCDC' , opacity: .3 });
         svg.appendChild(rect);
 
         for(let i=1; i <= w-pad * 2; i+=10) {
